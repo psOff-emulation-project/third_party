@@ -12,26 +12,18 @@ jobs:
           config:
             - name: Windows
               os: windows-latest
-              compiler: 'clang'
-              compiler_cxx: 'clang'
               preparation: ''
               build_type: Release
             - name: Linux
               os: ubuntu-latest
-              compiler: 'clang-18'
-              compiler_cxx: 'clang++-18'
               preparation: 'sudo apt update -y && sudo apt install -y ninja-build gnome-desktop-testing libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev libxi-dev libxss-dev libxtst-dev libxkbcommon-dev libdrm-dev libgbm-dev libgl1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev libdbus-1-dev libibus-1.0-dev libudev-dev libpipewire-0.3-dev libwayland-dev libdecor-0-dev liburing-dev'
               build_type: Release
             - name: Windows
               os: windows-latest
-              compiler: 'clang'
-              compiler_cxx: 'clang'
               preparation: ''
               build_type: Debug
             - name: Linux
               os: ubuntu-latest
-              compiler: 'clang-18'
-              compiler_cxx: 'clang++-18'
               preparation: 'sudo apt update -y && sudo apt install -y ninja-build gnome-desktop-testing libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev libxi-dev libxss-dev libxtst-dev libxkbcommon-dev libdrm-dev libgbm-dev libgl1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev libdbus-1-dev libibus-1.0-dev libudev-dev libpipewire-0.3-dev libwayland-dev libdecor-0-dev liburing-dev'
               build_type: Debug
 
@@ -51,6 +43,13 @@ jobs:
           with:
             arch: x86_64
 
+        - name: Set up Clang
+          uses: egor-tensin/setup-clang@23bc15cd4207e45f1566447deb48f4ff3ef932cb
+          id: find-clang
+          with:
+            version: 21
+            platform: x64
+
         - name: Prepare OpenSSL (Linux)
           if: ${{ matrix.config.name == 'Linux' }}
           shell: bash
@@ -66,14 +65,14 @@ jobs:
           run: ./prepare_boost.sh
 
         - name: Prepare Vulkan SDK
-          uses: jakoch/install-vulkan-sdk-action@v1.6.0
+          uses: jakoch/install-vulkan-sdk-action@37effcfa045411f8bfbbda26df2fd1b3bf3436fa
           with:
             vulkan_version: 1.4.335.0
             install_runtime: true
             cache: true
 
         - name: Configure
-          run: cmake -S. -B_build/_Release -GNinja -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_C_COMPILER=${{ matrix.config.compiler }} -DCMAKE_CXX_COMPILER=${{ matrix.config.compiler_cxx }}
+          run: cmake -S. -B_build/_Release -GNinja -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_C_COMPILER=${{ steps.find-clang.outputs.clang }} -DCMAKE_CXX_COMPILER=${{ steps.find-clang.outputs.clangxx }}
 
         - name: Build
           run: cmake --build _build/_Release -j4
