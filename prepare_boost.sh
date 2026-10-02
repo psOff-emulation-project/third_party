@@ -18,4 +18,5 @@ for lib in $LIBS; do
   python tools/boostdep/depinst/depinst.py -X test -X example -g "--depth 1 --jobs 4" $lib;
 done
 cd libs/thread;
+git reset --hard;
 git apply ../../../../patches/boost_thread.patch;
