@@ -19,10 +19,11 @@ mkdir -p "$INSTALL_PREFIX";
 INSTALL_PREFIX="$(cd "$INSTALL_PREFIX" && pwd)";
 
 if [ -d "$REPO_DIR/.git" ]; then
-  cd "$REPO_DIR";
+  pushd "$REPO_DIR";
   git fetch --depth=1 origin;
   git reset --hard $OPENSSL_REF;
   git gc --prune=now;
+  popd;
 else
   mkdir -p "$(dirname "$REPO_DIR")";
   git clone --depth 1 --branch "$OPENSSL_REF" \
@@ -64,7 +65,7 @@ CONFIGURE_FLAGS=(
       "${CONFIGURE_FLAGS[@]}" \
       "${BUILD_TYPE}" \
       --prefix="$INSTALL_PREFIX" \
-      --libdir="$INSTALL_PREFIX/lib" \
+      --libdir="lib" \
       --openssldir="$INSTALL_PREFIX/ssl";
 
   make "-j$(nproc)";

@@ -3,10 +3,10 @@ include(ExternalProject)
 include(FetchContent)
 
 # Versions of third party libraries
-set(TPV_ZLIB_VER "v1.3.1")
-set(TPV_ZIP_VER "v1.11.4")
+set(TPV_ZLIB_VER "v1.3.2")
+set(TPV_ZIP_VER "v1.12")
 set(TPV_SDL_VER "release-3.4.16")
-set(TPV_PNG_VER "v1.6.58")
+set(TPV_PNG_VER "v1.6.59")
 set(TPV_VMA_VER "v3.4.0")
 set(TPV_PUGIXML_VER "v1.16")
 set(TPV_ZYCORE_VER "v1.5.1")
@@ -166,10 +166,9 @@ ExternalProject_Add(libzip_project
   -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
   -DCMAKE_PREFIX_PATH:STRING=${INSTALL_DIR}
 
-  -DENABLE_COMMONCRYPTO:BOOL=ON
-  -DENABLE_GNUTLS:BOOL=ON
-  -DENABLE_MBEDTLS:BOOL=ON
-  -DENABLE_OPENSSL:BOOL=OFF
+  -DENABLE_COMMONCRYPTO:BOOL=OFF
+  -DENABLE_GNUTLS:BOOL=OFF
+  -DENABLE_OPENSSL:BOOL=ON
   -DENABLE_FDOPEN:BOOL=OFF
   -DBUILD_TOOLS:BOOL=OFF
   -DBUILD_REGRESS:BOOL=OFF
@@ -327,6 +326,7 @@ add_library(imgui STATIC
 
   ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp
   ${imgui_SOURCE_DIR}/backends/imgui_impl_vulkan.cpp
+  ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp
 )
 
 set_target_properties(imgui
@@ -346,6 +346,7 @@ install(FILES
 
   ${CMAKE_SOURCE_DIR}/projects/imgui/backends/imgui_impl_sdl3.h
   ${CMAKE_SOURCE_DIR}/projects/imgui/backends/imgui_impl_vulkan.h
+  ${CMAKE_SOURCE_DIR}/projects/imgui/backends/imgui_impl_sdlrenderer3.h
 
   DESTINATION ${INSTALL_DIR}/include/imgui
 )
