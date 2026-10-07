@@ -7,7 +7,7 @@ if [[ $# -lt 1 || -z "$1" ]]; then
 fi
 
 INSTALL_PREFIX="$1";
-OPENSSL_REF="openssl-3.6.4";
+OPENSSL_REF="openssl-3.6.5";
 REPO_DIR="./projects/OpenSSL";
 BUILD_TYPE="--release";
 

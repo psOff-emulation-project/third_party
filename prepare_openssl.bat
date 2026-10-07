@@ -7,7 +7,7 @@ if "%~1"=="" (
 )
 
 set "INSTALL_PREFIX=%~1"
-set "OPENSSL_REF=openssl-3.6.4"
+set "OPENSSL_REF=openssl-3.6.5"
 set "REPO_DIR=projects\OpenSSL"
 set "BUILD_TYPE=--release"
 

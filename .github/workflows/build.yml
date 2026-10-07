@@ -27,7 +27,6 @@ jobs:
         id: third-release
         uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64
         with:
-          draft: true
           make_latest: true
           tag_name: ${{ steps.third-vername.outputs.version }}
 
@@ -116,6 +115,5 @@ jobs:
         - name: Release stuff
           uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64
           with:
-            draft: true
             tag_name: ${{ needs.create-release.outputs.psoff_version }}
             files: _build/_Release/psOff-3rd-${{ matrix.config.name }}-${{ matrix.config.build_type }}.7z
