@@ -4,8 +4,33 @@ on:
   workflow_dispatch:
 
 jobs:
+  create-release:
+    name: Create release
+    runs-on: windows-latest
+    outputs:
+      psoff_version: ${{ steps.third-vername.outputs.version }}
+    steps:
+      - name: Generate version name
+        id: third-vername
+        shell: pwsh
+        env:
+          GIT_BRANCH: ${{ github.ref_name }}
+        run: |
+          $_DATENOW=& Get-Date -uformat %Y%b%d
+          if (!($Env:GIT_BRANCH).equals("stable")) { $_DATENOW += "u"; }
+          "version=$_DATENOW" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Create release
+        id: third-release
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64
+        with:
+          draft: true
+          make_latest: true
+          tag_name: ${{ steps.third-vername.outputs.version }}
+
   build:
       name: ${{ matrix.config.build_type }} build for ${{ matrix.config.name }}
+      needs: create-release
       strategy:
         fail-fast: false
         matrix:
@@ -38,7 +63,7 @@ jobs:
           run: ${{ matrix.config.preparation }}
 
         - name: Detect MSVC
-          uses: igor725/msvc-dev-cmd@v1
+          uses: psOff-emulation-project/msvc-dev-cmd@v1
           if: ${{ matrix.config.name == 'Windows' }}
           with:
             arch: x86_64
@@ -85,8 +110,9 @@ jobs:
           run: |
             7z a psOff-3rd-${{ matrix.config.name }}-${{ matrix.config.build_type }}.7z -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on ./install/* -xr!licenses
 
-        - name: Upload artifacts
-          uses: actions/upload-artifact@v7
+        - name: Release stuff
+          uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64
           with:
-            name: psOff-3rd-${{ matrix.config.name }}-${{ matrix.config.build_type }}
-            path: _build/_Release/psOff-3rd-${{ matrix.config.name }}-${{ matrix.config.build_type }}.7z
+            draft: true
+            tag_name: ${{ needs.create-release.outputs.psoff_version }}
+            files: _build/_Release/psOff-3rd-${{ matrix.config.name }}-${{ matrix.config.build_type }}.7z
