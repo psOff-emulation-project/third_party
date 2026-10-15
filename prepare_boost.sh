@@ -1,15 +1,15 @@
 #!/bin/bash
 set -euo pipefail;
 
-BOOST_VER=1.92.0;
+BOOST_VER=$(sed -n 's/.*TPV_BOOST_VER\s*"\([^"]*\)".*/\1/p' versions.cmake);
 LIBS=$(sed -n 's/.*BOOST_INCLUDE_LIBRARIES\s*"\([^"]*\)".*/\1/p' CMakeLists.txt | tr ';' ' ');
 if [ -d projects/boost ]; then
   cd projects/boost;
   git fetch --depth=1 origin;
-  git reset --hard boost-$BOOST_VER;
+  git reset --hard "$BOOST_VER";
   git gc --prune=now;
 else
-  git clone -b boost-$BOOST_VER --depth 1 https://github.com/boostorg/boost.git projects/boost;
+  git clone -b "$BOOST_VER" --depth 1 https://github.com/boostorg/boost.git projects/boost;
   cd projects/boost;
 fi
 git submodule update --init --depth 1 tools/boostdep;

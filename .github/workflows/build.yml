@@ -77,19 +77,50 @@ jobs:
             version: 21
             platform: x64
 
+        - name: Resolve dependency versions
+          id: dep-versions
+          shell: bash
+          run: |
+            OPENSSL_REF=$(sed -n 's/.*TPV_OPENSSL_VER\s*"\([^"]*\)".*/\1/p' versions.cmake)
+            BOOST_VER=$(sed -n 's/.*TPV_BOOST_VER\s*"\([^"]*\)".*/\1/p' versions.cmake)
+            if [ -z "$OPENSSL_REF" ] || [ -z "$BOOST_VER" ]; then
+              echo "Failed to parse versions.cmake" >&2
+              exit 1
+            fi
+            echo "id=${BOOST_VER}-${OPENSSL_REF}" >> "$GITHUB_OUTPUT"
+
+        - name: Restore OpenSSL and boost cache
+          id: deps-cache
+          uses: actions/cache/restore@v6
+          with:
+            path: |
+              _build/_Release/install
+              projects/boost
+            key: deps-${{ runner.os }}-${{ matrix.config.build_type }}-${{ steps.dep-versions.outputs.id }}
+
         - name: Prepare OpenSSL (Linux)
-          if: ${{ matrix.config.name == 'Linux' }}
+          if: ${{ matrix.config.name == 'Linux' && steps.deps-cache.outputs.cache-hit != 'true' }}
           shell: bash
           run: ./prepare_openssl.sh "_build/_Release/install" "${{ matrix.config.build_type }}"
 
         - name: Prepare OpenSSL (Windows)
-          if: ${{ matrix.config.name == 'Windows' }}
+          if: ${{ matrix.config.name == 'Windows' && steps.deps-cache.outputs.cache-hit != 'true' }}
           shell: cmd
           run: .\prepare_openssl.bat "_build\_Release\install" "${{ matrix.config.build_type }}"
 
         - name: Prepare boost
+          if: ${{ steps.deps-cache.outputs.cache-hit != 'true' }}
           shell: bash
           run: ./prepare_boost.sh
+
+        - name: Save OpenSSL and boost cache
+          if: ${{ steps.deps-cache.outputs.cache-hit != 'true' }}
+          uses: actions/cache/save@v6
+          with:
+            path: |
+              _build/_Release/install
+              projects/boost
+            key: ${{ steps.deps-cache.outputs.cache-primary-key }}
 
         - name: Prepare Vulkan SDK
           uses: jakoch/install-vulkan-sdk-action@37effcfa045411f8bfbbda26df2fd1b3bf3436fa

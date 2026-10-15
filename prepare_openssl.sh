@@ -7,7 +7,7 @@ if [[ $# -lt 1 || -z "$1" ]]; then
 fi
 
 INSTALL_PREFIX="$1";
-OPENSSL_REF="openssl-3.6.5";
+OPENSSL_REF=$(sed -n 's/.*TPV_OPENSSL_VER\s*"\([^"]*\)".*/\1/p' versions.cmake);
 REPO_DIR="./projects/OpenSSL";
 BUILD_TYPE="--release";
 
