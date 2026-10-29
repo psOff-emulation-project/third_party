@@ -8,7 +8,7 @@ set(TPV_ZYCORE_VER "v1.5.1")
 set(TPV_ZYDIS_VER "v4.1.1")
 set(TPV_TRACY_VER "v0.14.1")
 set(TPV_MAGICENUM_VER "v0.9.8")
-set(TPV_IMGUI_VER "v1.93.0")
+set(TPV_IMGUI_VER "2fb554b1c81e6a8efcb4e3c236649a46354aa9ba")
 
 # Those values are not used by CMake directly, they
 # are for bash scripts that checkout Boost and OpenSSL,
