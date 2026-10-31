@@ -304,6 +304,14 @@ FetchContent_Declare(imgui
 )
 FetchContent_MakeAvailable(imgui)
 
+FetchContent_Declare(implot
+  GIT_REPOSITORY https://github.com/epezent/implot.git
+  GIT_TAG ${TPV_IMPLOT_VER}
+  GIT_SHALLOW true
+  SOURCE_DIR ${CMAKE_SOURCE_DIR}/projects/implot
+)
+FetchContent_MakeAvailable(implot)
+
 add_library(imgui STATIC
   ${imgui_SOURCE_DIR}/imgui_draw.cpp
   ${imgui_SOURCE_DIR}/imgui_tables.cpp
@@ -314,6 +322,10 @@ add_library(imgui STATIC
   ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp
   ${imgui_SOURCE_DIR}/backends/imgui_impl_vulkan.cpp
   ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp
+
+  ${implot_SOURCE_DIR}/implot.cpp
+  ${implot_SOURCE_DIR}/implot_demo.cpp
+  ${implot_SOURCE_DIR}/implot_items.cpp
 )
 
 set_target_properties(imgui
@@ -335,10 +347,14 @@ install(FILES
   ${CMAKE_SOURCE_DIR}/projects/imgui/backends/imgui_impl_vulkan.h
   ${CMAKE_SOURCE_DIR}/projects/imgui/backends/imgui_impl_sdlrenderer3.h
 
+  ${CMAKE_SOURCE_DIR}/projects/implot/implot.h
+  ${CMAKE_SOURCE_DIR}/projects/implot/implot_internal.h
+
   DESTINATION ${INSTALL_DIR}/include/imgui
 )
 
 target_include_directories(imgui PRIVATE
+  ${CMAKE_SOURCE_DIR}/projects/implot/
   ${CMAKE_SOURCE_DIR}/projects/imgui/
   ${INSTALL_DIR}/include/
   ${Vulkan_INCLUDE_DIR}
