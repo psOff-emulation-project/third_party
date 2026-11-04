@@ -20,7 +20,7 @@ INSTALL_PREFIX="$(cd "$INSTALL_PREFIX" && pwd)";
 
 if [ -d "$REPO_DIR/.git" ]; then
   pushd "$REPO_DIR";
-  git fetch --depth=1 origin;
+  git fetch --depth=1 origin refs/tags/$OPENSSL_REF:refs/tags/$OPENSSL_REF;
   git reset --hard $OPENSSL_REF;
   git gc --prune=now;
   popd;

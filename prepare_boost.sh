@@ -5,7 +5,7 @@ BOOST_VER=$(sed -n 's/.*TPV_BOOST_VER\s*"\([^"]*\)".*/\1/p' versions.cmake);
 LIBS=$(sed -n 's/.*BOOST_INCLUDE_LIBRARIES\s*"\([^"]*\)".*/\1/p' CMakeLists.txt | tr ';' ' ');
 if [ -d projects/boost ]; then
   cd projects/boost;
-  git fetch --depth=1 origin;
+  git fetch --depth=1 origin refs/tags/$BOOST_VER:refs/tags/$BOOST_VER;
   git reset --hard "$BOOST_VER";
   git gc --prune=now;
 else

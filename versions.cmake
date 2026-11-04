@@ -1,6 +1,6 @@
 set(TPV_ZLIB_VER "v1.3.2")
 set(TPV_ZIP_VER "v1.12.1")
-set(TPV_SDL_VER "release-3.4.18")
+set(TPV_SDL_VER "release-3.4.20")
 set(TPV_PNG_VER "v1.6.59")
 set(TPV_VMA_VER "v3.5.0")
 set(TPV_PUGIXML_VER "v1.16")
