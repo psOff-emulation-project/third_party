@@ -7,7 +7,7 @@ if "%~1"=="" (
 )
 
 set "INSTALL_PREFIX=%~1"
-set "OPENSSL_REF=openssl-3.6.5"
+for /f "tokens=2 delims=^"" %%A in ('findstr /c:"TPV_OPENSSL_VER" versions.cmake') do set "OPENSSL_REF=%%A"
 set "REPO_DIR=projects\OpenSSL"
 set "BUILD_TYPE=--release"
 
